@@ -23,17 +23,11 @@ pipeline {
     stage('Install Playwright Browsers') {
       steps {
         echo '🎭 Installing Playwright browsers...'
-        script {
-          try {
-            bat '''
-            mkdir "%APPDATA%\\npm" 2>nul || echo npm directory exists
-            npm config set cache "%TEMP%\\npm-cache"
-            npx playwright install
-            '''
-          } catch (Exception e) {
-            echo '⚠️ Playwright install failed, continuing...'
-          }
-        }
+        bat '''
+        mkdir "%APPDATA%\\npm" 2>nul || echo npm directory exists
+        npm config set cache "%TEMP%\\npm-cache"
+        npx playwright install
+        '''
       }
     }
 
@@ -47,21 +41,13 @@ pipeline {
     stage('Run Tests') {
       steps {
         echo '🧪 Running Playwright tests...'
-        bat 'npm run test'
-        // script {
-        //   try {
-        //     bat 'npm run test'
-        //   } catch (Exception e) {
-        //     echo '⚠️ Tests failed or not defined, continuing...'
-        //   }
-        // }
+        bat 'npm run test' // This fails the pipeline if tests fail
       }
     }
 
     stage('Release') {
       steps {
         echo '🚀 Release stage (add deployment logic here)...'
-        // You can add deployment scripts here
       }
     }
   }
