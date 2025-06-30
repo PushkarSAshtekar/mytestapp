@@ -1,59 +1,61 @@
 pipeline {
-    agent any
+  agent any
 
-    environment {
-        NODE_ENV = "production"
+  environment {
+    NODE_ENV = 'development'
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        echo '📥 Cloning repository...'
+        git 'https://github.com/PushkarSAshtekar/nextjs-app.git'
+      }
     }
 
-    stages {
-        stage('Checkout') {
-            steps {
-                echo "📥 Cloning repository..."
-                git branch: 'main', url: 'https://github.com/PushkarSAshtekar/nextjs-app.git'
-            }
+    stage('Build') {
+      steps {
+        echo '🔧 Installing dependencies...'
+        dir('nextjs-app') {
+          bat 'npm install'
+          
+          // ✅ Replaced 'npx playwright install' with direct node command
+          bat 'node node_modules/playwright/cli.js install'
         }
-
-        stage('Build') {
-            steps {
-                echo "🔧 Installing dependencies..."
-                dir('nextjs-app') {
-                    bat 'npm install'
-                    bat 'npx playwright install'
-                }
-            }
-        }
-
-        stage('Develop') {
-            steps {
-                echo "🚀 Starting development build..."
-                dir('nextjs-app') {
-                    bat 'npm run build'
-                }
-            }
-        }
-
-        stage('Test') {
-            steps {
-                echo "🧪 Running tests..."
-                dir('nextjs-app') {
-                    bat 'npm test'
-                }
-            }
-        }
-
-        stage('Release') {
-            steps {
-                echo "📦 Releasing application..."
-            }
-        }
+      }
     }
 
-    post {
-        success {
-            echo "✅ Build succeeded!"
+    stage('Develop') {
+      steps {
+        echo '🛠️ Running build step...'
+        dir('nextjs-app') {
+          bat 'npm run build'
         }
-        failure {
-            echo "❌ Build failed!"
-        }
+      }
     }
+
+    stage('Test') {
+      steps {
+        echo '🧪 Running tests...'
+        dir('nextjs-app') {
+          bat 'npm run test'
+        }
+      }
+    }
+
+    stage('Release') {
+      steps {
+        echo '🚀 Ready to release...'
+      }
+    }
+  }
+
+  post {
+    success {
+      echo '✅ Pipeline completed successfully!'
+    }
+    failure {
+      echo '❌ Build failed!'
+    }
+  }
 }
