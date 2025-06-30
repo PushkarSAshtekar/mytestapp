@@ -14,14 +14,13 @@ pipeline {
 
     stage('Install Dependencies') {
       steps {
-        bat 'cd mytestapp && npm install'
+        bat 'npm install'
       }
     }
 
     stage('Install Playwright Browsers') {
       steps {
         bat '''
-        cd mytestapp
         mkdir "%APPDATA%\\npm" 2>nul || echo npm dir exists
         npm config set cache "%TEMP%\\npm-cache"
         npx playwright install
@@ -31,14 +30,14 @@ pipeline {
 
     stage('Build App') {
       steps {
-        bat 'cd mytestapp && npm run build'
+        bat 'npm run build'
       }
     }
 
     stage('Run Tests') {
       steps {
         echo 'Running tests...'
-        bat 'cd mytestapp && npm run test'
+        bat 'npm run test'
       }
     }
 
