@@ -47,13 +47,14 @@ pipeline {
     stage('Run Tests') {
       steps {
         echo '🧪 Running Playwright tests...'
-        script {
-          try {
-            bat 'npm run test'
-          } catch (Exception e) {
-            echo '⚠️ Tests failed or not defined, continuing...'
-          }
-        }
+        bat 'npm run test'
+        // script {
+        //   try {
+        //     bat 'npm run test'
+        //   } catch (Exception e) {
+        //     echo '⚠️ Tests failed or not defined, continuing...'
+        //   }
+        // }
       }
     }
 
