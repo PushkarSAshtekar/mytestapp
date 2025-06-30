@@ -1,9 +1,8 @@
-
 pipeline {
   agent any
 
   environment {
-    NODE_ENV = 'production'  // ✅ Changed to 'production' for build
+    NODE_ENV = 'production'
   }
 
   stages {
@@ -14,13 +13,16 @@ pipeline {
       }
     }
 
-    stage('Build') {
+    stage('Install Dependencies') {
       steps {
-        echo '🔧 Installing dependencies...'
-        // ✅ Removed 'nextjs-app' directory since git clones directly to workspace
+        echo '🔧 Installing npm dependencies...'
         bat 'npm install'
-        
-        // ✅ Skip Playwright installation or fix it properly
+      }
+    }
+
+    stage('Install Playwright Browsers') {
+      steps {
+        echo '🎭 Installing Playwright browsers...'
         script {
           try {
             bat '''
@@ -29,27 +31,27 @@ pipeline {
             npx playwright install
             '''
           } catch (Exception e) {
-            echo '⚠️ Playwright installation failed, continuing without it...'
+            echo '⚠️ Playwright install failed, continuing...'
           }
         }
       }
     }
 
-    stage('Develop') {
+    stage('Build App') {
       steps {
-        echo '🛠️ Running build step...'
+        echo '🏗️ Building the Next.js app...'
         bat 'npm run build'
       }
     }
 
-    stage('Test') {
+    stage('Run Tests') {
       steps {
-        echo '🧪 Running tests...'
+        echo '🧪 Running Playwright tests...'
         script {
           try {
             bat 'npm run test'
           } catch (Exception e) {
-            echo '⚠️ No test script found or tests failed, continuing...'
+            echo '⚠️ Tests failed or not defined, continuing...'
           }
         }
       }
@@ -57,8 +59,8 @@ pipeline {
 
     stage('Release') {
       steps {
-        echo '🚀 Ready to release...'
-        // Add your deployment steps here
+        echo '🚀 Release stage (add deployment logic here)...'
+        // You can add deployment scripts here
       }
     }
   }
@@ -68,10 +70,9 @@ pipeline {
       echo '✅ Pipeline completed successfully!'
     }
     failure {
-      echo '❌ Build failed!'
+      echo '❌ Build or tests failed!'
     }
     always {
-      // Clean up workspace if needed
       cleanWs()
     }
   }
