@@ -15,8 +15,8 @@ pipeline {
 
         stage('Build') {
             steps {
-                dir('test-app') {
-                    echo "🔧 Installing dependencies..."
+                echo "🔧 Installing dependencies..."
+                dir('mytestapp') {
                     bat 'npm install'
                     bat 'npx playwright install'
                 }
@@ -25,8 +25,8 @@ pipeline {
 
         stage('Develop') {
             steps {
-                dir('test-app') {
-                    echo "🚀 Running build..."
+                echo "🚀 Starting development build..."
+                dir('mytestapp') {
                     bat 'npm run build'
                 }
             }
@@ -34,8 +34,8 @@ pipeline {
 
         stage('Test') {
             steps {
-                dir('test-app') {
-                    echo "🧪 Running Playwright tests..."
+                echo "🧪 Running tests..."
+                dir('mytestapp') {
                     bat 'npm test'
                 }
             }
@@ -43,7 +43,8 @@ pipeline {
 
         stage('Release') {
             steps {
-                echo "📦 Releasing (placeholder)..."
+                echo "📦 Releasing application..."
+                // Optional deployment steps
             }
         }
     }
@@ -57,3 +58,4 @@ pipeline {
         }
     }
 }
+
