@@ -9,14 +9,14 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo "📥 Cloning repository..."
-                git branch: 'main', url: 'https://github.com/PushkarSAshtekar/mytestapp.git'
+                git branch: 'main', url: 'https://github.com/PushkarSAshtekar/nextjs-app.git'
             }
         }
 
         stage('Build') {
             steps {
                 echo "🔧 Installing dependencies..."
-                dir('mytestapp') {
+                dir('nextjs-app') {
                     bat 'npm install'
                     bat 'npx playwright install'
                 }
@@ -26,7 +26,7 @@ pipeline {
         stage('Develop') {
             steps {
                 echo "🚀 Starting development build..."
-                dir('mytestapp') {
+                dir('nextjs-app') {
                     bat 'npm run build'
                 }
             }
@@ -35,7 +35,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo "🧪 Running tests..."
-                dir('mytestapp') {
+                dir('nextjs-app') {
                     bat 'npm test'
                 }
             }
@@ -44,7 +44,6 @@ pipeline {
         stage('Release') {
             steps {
                 echo "📦 Releasing application..."
-                // Optional deployment steps
             }
         }
     }
@@ -58,4 +57,3 @@ pipeline {
         }
     }
 }
-
