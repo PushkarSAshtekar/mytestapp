@@ -15,33 +15,41 @@ pipeline {
 
     stage('Install Dependencies') {
       steps {
-        echo '🔧 Installing npm dependencies...'
-        bat 'npm install'
+        dir('nextjs-app') {
+          echo '🔧 Installing npm dependencies...'
+          bat 'npm install'
+        }
       }
     }
 
     stage('Install Playwright Browsers') {
       steps {
-        echo '🎭 Installing Playwright browsers...'
-        bat '''
-        mkdir "%APPDATA%\\npm" 2>nul || echo npm directory exists
-        npm config set cache "%TEMP%\\npm-cache"
-        npx playwright install
-        '''
+        dir('nextjs-app') {
+          echo '🎭 Installing Playwright browsers...'
+          bat '''
+          mkdir "%APPDATA%\\npm" 2>nul || echo npm directory exists
+          npm config set cache "%TEMP%\\npm-cache"
+          npx playwright install
+          '''
+        }
       }
     }
 
     stage('Build App') {
       steps {
-        echo '🏗️ Building the Next.js app...'
-        bat 'npm run build'
+        dir('nextjs-app') {
+          echo '🏗️ Building the Next.js app...'
+          bat 'npm run build'
+        }
       }
     }
 
     stage('Run Tests') {
       steps {
-        echo '🧪 Running Playwright tests...'
-        bat 'npm run test' // This fails the pipeline if tests fail
+        dir('nextjs-app') {
+          echo '🧪 Running Playwright tests...'
+          bat 'npm run test'
+        }
       }
     }
 
