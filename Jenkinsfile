@@ -9,7 +9,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo "📥 Cloning repository..."
-                git branch: 'main', url: 'https://github.com/PushkarSAshtekar/nextjs-app.git'
+                git branch: 'main', url: 'https://github.com/PushkarSAshtekar/mytestapp.git'
             }
         }
 
