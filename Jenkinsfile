@@ -6,12 +6,6 @@ pipeline {
   }
 
   stages {
-    stage('Clean Workspace') {
-      steps {
-        deleteDir()
-      }
-    }
-
     stage('Checkout') {
       steps {
         git branch: 'main', url: 'https://github.com/PushkarSAshtekar/mytestapp.git'
@@ -20,35 +14,44 @@ pipeline {
 
     stage('Install Dependencies') {
       steps {
-        bat 'npm install'
+        bat '''
+          echo Installing main and dev dependencies...
+          npm install
+          npm install --save-dev typescript @types/react @types/node
+        '''
       }
     }
 
     stage('Install Playwright Browsers') {
       steps {
         bat '''
-        mkdir "%APPDATA%\\npm" 2>nul || echo npm dir exists
-        npm config set cache "%TEMP%\\npm-cache"
-        npx playwright install
+          echo Setting up Playwright...
+          mkdir "%APPDATA%\\npm" 2>nul || echo npm dir exists
+          npm config set cache "%TEMP%\\npm-cache"
+          npx playwright install
         '''
       }
     }
 
     stage('Build App') {
       steps {
-        bat 'npm run build'
+        bat '''
+          echo Building the Next.js app...
+          npm run build
+        '''
       }
     }
 
     stage('Run Tests') {
       steps {
+        echo 'Running tests...'
         bat 'npm run test'
       }
     }
 
     stage('Release') {
       steps {
-        echo '✅ Ready to deploy!'
+        echo 'Deploy step goes here...'
       }
     }
   }
