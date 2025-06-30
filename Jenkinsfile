@@ -8,64 +8,51 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        echo '📥 Cloning repository...'
-        git branch: 'main', url: 'https://github.com/PushkarSAshtekar/nextjs-app.git'
+        git branch: 'main', url: 'https://github.com/PushkarSAshtekar/mytestapp.git'
       }
     }
 
     stage('Install Dependencies') {
       steps {
-        dir('nextjs-app') {
-          echo '🔧 Installing npm dependencies...'
-          bat 'npm install'
-        }
+        bat 'npm install'
       }
     }
 
     stage('Install Playwright Browsers') {
       steps {
-        dir('nextjs-app') {
-          echo '🎭 Installing Playwright browsers...'
-          bat '''
-          mkdir "%APPDATA%\\npm" 2>nul || echo npm directory exists
-          npm config set cache "%TEMP%\\npm-cache"
-          npx playwright install
-          '''
-        }
+        bat '''
+        mkdir "%APPDATA%\\npm" 2>nul || echo npm dir exists
+        npm config set cache "%TEMP%\\npm-cache"
+        npx playwright install
+        '''
       }
     }
 
     stage('Build App') {
       steps {
-        dir('nextjs-app') {
-          echo '🏗️ Building the Next.js app...'
-          bat 'npm run build'
-        }
+        bat 'npm run build'
       }
     }
 
     stage('Run Tests') {
       steps {
-        dir('nextjs-app') {
-          echo '🧪 Running Playwright tests...'
-          bat 'npm run test'
-        }
+        bat 'npm run test'
       }
     }
 
     stage('Release') {
       steps {
-        echo '🚀 Release stage (add deployment logic here)...'
+        echo 'Deploy step goes here...'
       }
     }
   }
 
   post {
     success {
-      echo '✅ Pipeline completed successfully!'
+      echo '✅ Pipeline passed!'
     }
     failure {
-      echo '❌ Build or tests failed!'
+      echo '❌ Pipeline failed!'
     }
     always {
       cleanWs()
